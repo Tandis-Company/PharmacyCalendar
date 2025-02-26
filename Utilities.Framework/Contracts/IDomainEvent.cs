@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Utilities.Framework.Contracts
+{
+    public interface IDomainEvent
+    {
+        IReadOnlyCollection<BaseDomainEvent> GetEvents();
+        void AddEvent(BaseDomainEvent domainEvent);
+    }
+}

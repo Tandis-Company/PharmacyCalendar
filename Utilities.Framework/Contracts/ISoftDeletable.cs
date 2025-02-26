@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Utilities.Framework.Contracts
+{
+    public interface ISoftDeletable<TUserId>
+        where TUserId : struct, IComparable, IComparable<TUserId>
+    {
+        DateTime? DeletedAt { get; }
+        TUserId? Deleter { get; }
+    }
+}
