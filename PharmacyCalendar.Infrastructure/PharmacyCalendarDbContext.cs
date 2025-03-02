@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
 using PharmacyCalendar.Infrastructure.Configuration;
 using System.Reflection;
 using Utilities.Framework.Contracts;

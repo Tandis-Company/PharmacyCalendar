@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using PharmacyCalendar.Application.Features.Command.Dtos;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate.Contracts;
-using System.Text.RegularExpressions;
+using PharmacyCalendar.Application.Features.Dtos;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Contracts;
 
 namespace PharmacyCalendar.Application.Features.Command
 {
-    public class CreateTechnicalOfficerCommand : IRequest<CreateoutputDto>
+    public class CreateTechnicalOfficerCommand : IRequest<TechnicalOfficeroutputDto>
     {
         public string FullName { get; set; }
         public string NationalCode { get; set; }
 
 
         #region [- Handler() -]
-        public class Handler : IRequestHandler<CreateTechnicalOfficerCommand, CreateoutputDto>
+        public class Handler : IRequestHandler<CreateTechnicalOfficerCommand, TechnicalOfficeroutputDto>
         {
             private readonly IMapper _mapper;
             private readonly IMediator _mediator;
@@ -26,13 +25,12 @@ namespace PharmacyCalendar.Application.Features.Command
                 _mediator = mediator;
                 _repository = repository;
             }
-            public async Task<CreateoutputDto> Handle(CreateTechnicalOfficerCommand request, CancellationToken cancellationToken)
+            public async Task<TechnicalOfficeroutputDto> Handle(CreateTechnicalOfficerCommand request, CancellationToken cancellationToken)
             {
                 var officer = new TechnicalOfficer(request.FullName, request.NationalCode);
                 await _repository.AddAsync(officer, cancellationToken);
-                await _mediator.Send(officer, cancellationToken);
                 await _repository.SaveChangeAsync(cancellationToken);
-                return _mapper.Map<CreateoutputDto>(officer);
+                return _mapper.Map<TechnicalOfficeroutputDto>(officer);
             }
         }
         #endregion

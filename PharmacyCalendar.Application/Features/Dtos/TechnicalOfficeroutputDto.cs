@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PharmacyCalendar.Application.Features.Command.Dtos
+namespace PharmacyCalendar.Application.Features.Dtos
 {
-    public class CreateoutputDto
+    public class TechnicalOfficeroutputDto
     {
         public Guid Id { get; set; }
         public string FullName { get; set; }

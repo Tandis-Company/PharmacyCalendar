@@ -1,5 +1,5 @@
-﻿using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate.Contracts;
+﻿using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

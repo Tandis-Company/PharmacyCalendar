@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace PharmacyCalendar.Infrastructure.Repositories
             return dbContext.Set<TEntity>().ToListAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await dbContext.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken: cancellationToken);
         }

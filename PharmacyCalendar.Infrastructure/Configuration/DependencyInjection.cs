@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Contracts;
+using PharmacyCalendar.Infrastructure.Repositories;
+using Utilities.Framework.Contracts;
 
 namespace PharmacyCalendar.Infrastructure.Configuration
 {
@@ -28,12 +30,17 @@ namespace PharmacyCalendar.Infrastructure.Configuration
         {
             services.AddDbContext<PharmacyCalendarDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
+                options.UseSqlServer(configuration.GetConnectionString("Default"));
                 options.EnableSensitiveDataLogging();
             });
+        
         }
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped(typeof(IWriteRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(IReadRepository<>), typeof(BaseRepository<>));
+
+            services.AddScoped<ITechnicalOfficerRepository, TechnicalOfficerRepository>();
 
         }
     }

@@ -1,14 +1,9 @@
-﻿using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Enums;
 using Utilities.Framework;
 using Utilities.Framework.Contracts;
 using Utilities.Framework.Guards;
 
-namespace PharmacyCalendar.Domain.AggregatesModel.GroupAggregate
+namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate
 {
     public class TechnicalOfficer: AggregateRoot, IAuditable<int>, IDbSetEntity
     {

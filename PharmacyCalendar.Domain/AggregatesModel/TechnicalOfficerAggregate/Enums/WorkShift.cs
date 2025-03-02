@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PharmacyCalendar.Domain.AggregatesModel.GroupAggregate.Enums
+namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Enums
 {
     public enum WorkShift
     {

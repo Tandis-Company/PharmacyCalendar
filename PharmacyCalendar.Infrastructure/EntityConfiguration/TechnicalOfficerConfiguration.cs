@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PharmacyCalendar.Domain.AggregatesModel.GroupAggregate;
+using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
