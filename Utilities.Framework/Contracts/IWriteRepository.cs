@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Utilities.Framework.Contracts
 {
-    public interface IWriteRepository<TEntity> where TEntity : AggregateRoot
+    public interface IWriteRepository<TEntity> where TEntity : class
     {
         TEntity Add(TEntity entity);
         Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default, bool saveChanges = true);

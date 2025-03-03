@@ -8,11 +8,10 @@ namespace PharmacyCalendar.Api.Configuration
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddJwtAuthentication(this IServiceCollection services, SiteSettings siteSettings)
+        public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var authority = siteSettings.SSO_Api_Url;
-            var cookieName = siteSettings.JwtBearer.CookieName;
-            var refreshName = siteSettings.JwtBearer.RefreshName;
+            var authority = configuration.GetSection("SSO_Api_Url").Value;
+            var cookieName = configuration.GetSection("JwtBearer:CookieName").Value;
 
             services
              .AddAuthentication(option =>
@@ -63,8 +62,6 @@ namespace PharmacyCalendar.Api.Configuration
                     }
                 };
             });
-
-
         }
     }
 }

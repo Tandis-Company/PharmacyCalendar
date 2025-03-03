@@ -11,7 +11,7 @@ using Utilities.Framework.Contracts;
 namespace PharmacyCalendar.Infrastructure.Repositories
 {
     public class BaseRepository<TEntity> : IWriteRepository<TEntity>, IReadRepository<TEntity>
-       where TEntity : AggregateRoot
+       where TEntity : class
     {
         private readonly PharmacyCalendarDbContext dbContext;
         public BaseRepository(PharmacyCalendarDbContext dbContext)

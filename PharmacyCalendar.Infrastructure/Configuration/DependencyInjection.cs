@@ -16,24 +16,23 @@ namespace PharmacyCalendar.Infrastructure.Configuration
             services.AddRepositories(configuration);
             return services;
         }
-        public static IApplicationBuilder InitializeDatabase(this IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<PharmacyCalendarDbContext>();
-                dbContext.Database.Migrate();
-            }
+        //public static IApplicationBuilder InitializeDatabase(this IApplicationBuilder app)
+        //{
+        //    using (var scope = app.ApplicationServices.CreateScope())
+        //    {
+        //        var dbContext = scope.ServiceProvider.GetRequiredService<PharmacyCalendarDbContext>();
+        //        dbContext.Database.Migrate();
+        //    }
 
-            return app;
-        }
+        //    return app;
+        //}
         private static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<PharmacyCalendarDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("Default"));
-                options.EnableSensitiveDataLogging();
+                options.UseSqlServer(configuration.GetSection("ConnectionString").Value);
+                //options.EnableSensitiveDataLogging();
             });
-        
         }
         private static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
@@ -41,7 +40,6 @@ namespace PharmacyCalendar.Infrastructure.Configuration
             services.AddScoped(typeof(IReadRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<ITechnicalOfficerRepository, TechnicalOfficerRepository>();
-
         }
     }
 }

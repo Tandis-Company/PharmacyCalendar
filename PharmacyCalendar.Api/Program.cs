@@ -1,6 +1,9 @@
 using Microsoft.OpenApi.Models;
 using PharmacyCalendar.Api.Configuration;
 using PharmacyCalendar.Application.Features.Query;
+using PharmacyCalendar.Infrastructure.Configuration;
+using System.Reflection;
+using FluentValidation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,15 +13,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddPersistance(builder.Configuration);
+
 
 #region [- MediatR && AutoMapper -]
 
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+var assembly = Assembly.GetExecutingAssembly();
+var appAssembly = typeof(GetTechnicalOfficerByIdQuery).Assembly;
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly, appAssembly));
+//builder.Services.AddValidatorsFromAssembly(appAssembly);
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -51,6 +58,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/", () => "Hello World!");
