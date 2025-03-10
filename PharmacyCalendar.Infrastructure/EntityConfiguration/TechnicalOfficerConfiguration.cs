@@ -15,10 +15,10 @@ namespace PharmacyCalendar.Infrastructure.EntityConfiguration
         public void Configure(EntityTypeBuilder<TechnicalOfficer> builder)
         {
 
-            builder.ToTable("TechnicalOfficer", "TechnicalOfficer");
+            builder.ToTable("TechnicalOfficer");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.FullName).IsRequired().HasMaxLength(50);
-            builder.Property(p => p.NationalCode).IsRequired().HasMaxLength(50);
+            builder.Property(p => p.NationalCode).IsRequired().HasMaxLength(10);
         }
     }
 }

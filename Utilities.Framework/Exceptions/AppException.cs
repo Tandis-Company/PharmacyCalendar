@@ -26,5 +26,6 @@ namespace Utilities.Framework.Exceptions
         {
             HttpStatusCode = httpStatusCode;
         }
+
     }
 }

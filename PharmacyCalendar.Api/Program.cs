@@ -19,13 +19,9 @@ builder.Services.AddPersistance(builder.Configuration);
 
 #region [- MediatR && AutoMapper -]
 
-//builder.Services.AddMediatR(cfg =>
-//    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
 var assembly = Assembly.GetExecutingAssembly();
 var appAssembly = typeof(GetTechnicalOfficerByIdQuery).Assembly;
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly, appAssembly));
-//builder.Services.AddValidatorsFromAssembly(appAssembly);
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -46,6 +42,7 @@ builder.Services.AddSwaggerGen(c =>
 #endregion
 
 var app = builder.Build();
+app.InitializeDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

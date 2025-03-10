@@ -6,22 +6,19 @@ using Utilities.Framework.Exceptions;
 
 namespace PharmacyCalendar.Application.Features.Query
 {
-    public class GetTechnicalOfficerByIdQuery : IRequest<TechnicalOfficeroutputDto>
+    public class GetTechnicalOfficerByIdQuery : IRequest<GetTechnicalOfficerDto>
     {
         public Guid Id { get; set; }
 
-        public class Handler : IRequestHandler<GetTechnicalOfficerByIdQuery, TechnicalOfficeroutputDto>
+        #region [- Handler() -]
+        public class Handler : IRequestHandler<GetTechnicalOfficerByIdQuery, GetTechnicalOfficerDto>
         {
-            private readonly IMapper _mapper;
             private readonly ITechnicalOfficerRepository _repository;
-
-            public Handler(IMapper mapper, ITechnicalOfficerRepository repository)
+            public Handler(ITechnicalOfficerRepository repository)
             {
-                _mapper = mapper;
                 _repository = repository;
             }
-
-            public async Task<TechnicalOfficeroutputDto> Handle(GetTechnicalOfficerByIdQuery query, CancellationToken cancellationToken)
+            public async Task<GetTechnicalOfficerDto> Handle(GetTechnicalOfficerByIdQuery query, CancellationToken cancellationToken)
             {
                 if (query.Id == Guid.Empty)
                 {
@@ -30,11 +27,18 @@ namespace PharmacyCalendar.Application.Features.Query
                 var officer = await _repository.GetByIdAsync(query.Id, cancellationToken);
                 if (officer == null)
                 {
-                    throw new AppException("مسئول فنی پیدا نشد");
+                    throw new AppException("مسئول فنی پیدا نشد", System.Net.HttpStatusCode.NotFound);
                 }
-                return _mapper.Map<TechnicalOfficeroutputDto>(officer);
+                var officerDto = new GetTechnicalOfficerDto
+                {
+                    FullName = officer.FullName,
+                    NationalCode = officer.NationalCode,
+                };
+                return officerDto;
             }
         }
+        #endregion
+
     }
 }
 

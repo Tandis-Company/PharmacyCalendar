@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using PharmacyCalendar.Application.Features.Dtos;
 using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate;
 using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Contracts;
 
@@ -11,23 +10,20 @@ namespace PharmacyCalendar.Application.Features.Command
     {
         public string FullName { get; set; }
         public string NationalCode { get; set; }
+        public DateTime CreatedDate { get; private set; } = DateTime.Now;
 
 
         #region [- Handler() -]
         public class Handler : IRequestHandler<CreateTechnicalOfficerCommand, Guid>
         {
-            private readonly IMapper _mapper;
-            private readonly IMediator _mediator;
             private readonly ITechnicalOfficerRepository _repository;
-            public Handler(IMapper mapper, IMediator mediator, ITechnicalOfficerRepository repository)
+            public Handler(ITechnicalOfficerRepository repository)
             {
-                _mapper = mapper;
-                _mediator = mediator;
                 _repository = repository;
             }
             public async Task<Guid> Handle(CreateTechnicalOfficerCommand request, CancellationToken cancellationToken)
             {
-                var officer = new TechnicalOfficer(request.FullName, request.NationalCode);
+                var officer = new TechnicalOfficer(request.FullName, request.NationalCode, request.CreatedDate);
                 await _repository.AddAsync(officer, cancellationToken);
                 await _repository.SaveChangeAsync(cancellationToken);
                 return officer.Id;
@@ -41,14 +37,37 @@ namespace PharmacyCalendar.Application.Features.Command
             public CreateCommandValidator()
             {
                 RuleFor(c => c.FullName)
-               .NotEmpty().WithMessage("{FullName} is required")
-               .NotNull().MaximumLength(200).WithMessage("{FullName} must not exceed 200 characters. ");
+               .NotEmpty().WithMessage("لطفا نام و نام خانوادگی خود را وارد کنید")
+               .NotNull().MaximumLength(50).WithMessage("نام و نام خانوادگی نباید بیشتر از 50 کاراکتر باشد");
 
                 RuleFor(c => c.NationalCode)
-               .NotEmpty().WithMessage("{NationalCode} is required")
-               .NotNull().MaximumLength(200).WithMessage("{NationalCode} must not exceed 200 characters. ");
+               .NotEmpty().WithMessage("لطفا کدملی خود را وارد کنید")
+               .Length(10).WithMessage("کد ملی باید ۱۰ رقم باشد.")
+               .Must(BeAllDigits).WithMessage("کد ملی باید فقط شامل اعداد باشد.")
+               .Must(BeValidNationalCode).WithMessage("کد ملی معتبر نیست.");
+            }
+
+            private bool BeAllDigits(string nationalCode)
+            {
+                return nationalCode.All(char.IsDigit);
+            }
+
+            private bool BeValidNationalCode(string nationalCode)
+            {
+                if (nationalCode.Length != 10 || !nationalCode.All(char.IsDigit))
+                    return false;
+
+                var check = int.Parse(nationalCode[9].ToString());
+                var sum = 0;
+                for (var i = 0; i < 9; i++)
+                {
+                    sum += int.Parse(nationalCode[i].ToString()) * (10 - i);
+                }
+                var remainder = sum % 11;
+                return (remainder < 2 && check == remainder) || (remainder >= 2 && check == 11 - remainder);
             }
         }
         # endregion
+
     }
 }
