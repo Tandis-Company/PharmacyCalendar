@@ -12,6 +12,14 @@ namespace PharmacyCalendar.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<TechnicalOfficerWorkshift> AddAsync(TechnicalOfficerWorkshift entity, CancellationToken cancellationToken = default, bool saveChanges = true)
+        {
+            await _context.AddAsync(entity, cancellationToken);
+            if (saveChanges)
+                await SaveChangeAsync(cancellationToken);
+            return entity;
+        }
+
         public async Task<IEnumerable<TechnicalOfficer>> GetAllAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.TechnicalOfficers.Where(g => g.Id == id).ToListAsync(cancellationToken);

@@ -10,16 +10,15 @@ namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate
     {
         public string FullName { get; private set; }
         public string NationalCode { get; private set; }
-        public DateTime CreatedDate { get; private set; }
+        public DateTime CreatedDate { get; private set; } = DateTime.Now;
 
 
-        public TechnicalOfficer(string fullName, string nationalCode, DateTime createdDate)
+        public TechnicalOfficer(string fullName, string nationalCode)
         {
             Guard.AgainstNullOrEmpty(fullName, "نام و نام خانوادگی الزامی است");
             Guard.AgainstNullValue(nationalCode, "کد ملی الزامی است");
             FullName = fullName;
             NationalCode = nationalCode;
-            CreatedDate = createdDate;
         }
     }
 }

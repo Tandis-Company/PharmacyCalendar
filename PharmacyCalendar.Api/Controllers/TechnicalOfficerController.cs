@@ -1,5 +1,6 @@
-﻿using AutoMapper;
+﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyCalendar.Application.Features.Command;
 using PharmacyCalendar.Application.Features.Dtos;
@@ -14,11 +15,14 @@ namespace PharmacyCalendar.Api.Controllers
     [ApiController]
     public class TechnicalOfficerController : ControllerBase
     {
+        private readonly IValidator<CreateTechnicalOfficerCommand> _individualValidator;
         private readonly IMediator _mediator;
 
         #region [- Ctor -]
-        public TechnicalOfficerController(IMediator mediator)
+        public TechnicalOfficerController(IMediator mediator,
+            IValidator<CreateTechnicalOfficerCommand> individualValidator)
         {
+            _individualValidator = individualValidator;
             _mediator = mediator;
         }
 
@@ -41,7 +45,15 @@ namespace PharmacyCalendar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ApiResult<Guid>> Create([FromBody] CreateTechnicalOfficerCommand command, CancellationToken cancellationToken = default)
         {
-            
+            var validationResult = _individualValidator.Validate(command);
+            if (!validationResult.IsValid)
+            {
+                var errorMessages = validationResult.Errors
+                .Select(error => error.ErrorMessage)
+                .ToList();
+                var combinedErrorMessage = string.Join(" | ", errorMessages);
+                return new ApiResult<Guid>(false, combinedErrorMessage);
+            }
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);
         }

@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PharmacyCalendar.Application.Behaviours;
 using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Contracts;
 using PharmacyCalendar.Infrastructure.Repositories;
 using Utilities.Framework.Contracts;
+using static PharmacyCalendar.Application.Features.Command.CreateTechnicalOfficerCommand;
+using static PharmacyCalendar.Application.Features.Command.CreateWorkShiftCommand;
 
 namespace PharmacyCalendar.Infrastructure.Configuration
 {
@@ -41,8 +46,13 @@ namespace PharmacyCalendar.Infrastructure.Configuration
         {
             services.AddScoped(typeof(IWriteRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(BaseRepository<>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehaviour<,>));
 
             services.AddScoped<ITechnicalOfficerRepository, TechnicalOfficerRepository>();
+            services.AddScoped<ITechnicalOfficerWorkShiftRepository, TechnicalOfficerWorkShiftRepository>();
+            services.AddValidatorsFromAssemblyContaining<CreateWorkShiftDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateWorkShiftCollectionValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateCommandValidator>();
         }
 
         #endregion

@@ -14,7 +14,6 @@ namespace PharmacyCalendar.Infrastructure.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<TechnicalOfficer> builder)
         {
-
             builder.ToTable("TechnicalOfficer");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.FullName).IsRequired().HasMaxLength(50);

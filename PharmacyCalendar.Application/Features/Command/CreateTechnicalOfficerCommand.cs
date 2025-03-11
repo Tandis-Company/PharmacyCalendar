@@ -10,7 +10,6 @@ namespace PharmacyCalendar.Application.Features.Command
     {
         public string FullName { get; set; }
         public string NationalCode { get; set; }
-        public DateTime CreatedDate { get; private set; } = DateTime.Now;
 
 
         #region [- Handler() -]
@@ -23,7 +22,7 @@ namespace PharmacyCalendar.Application.Features.Command
             }
             public async Task<Guid> Handle(CreateTechnicalOfficerCommand request, CancellationToken cancellationToken)
             {
-                var officer = new TechnicalOfficer(request.FullName, request.NationalCode, request.CreatedDate);
+                var officer = new TechnicalOfficer(request.FullName, request.NationalCode);
                 await _repository.AddAsync(officer, cancellationToken);
                 await _repository.SaveChangeAsync(cancellationToken);
                 return officer.Id;
