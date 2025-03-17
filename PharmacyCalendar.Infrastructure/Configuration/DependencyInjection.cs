@@ -49,7 +49,6 @@ namespace PharmacyCalendar.Infrastructure.Configuration
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehaviour<,>));
 
             services.AddScoped<ITechnicalOfficerRepository, TechnicalOfficerRepository>();
-            services.AddScoped<ITechnicalOfficerWorkShiftRepository, TechnicalOfficerWorkShiftRepository>();
             services.AddValidatorsFromAssemblyContaining<CreateWorkShiftDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateWorkShiftCollectionValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateCommandValidator>();
@@ -64,7 +63,7 @@ namespace PharmacyCalendar.Infrastructure.Configuration
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<PharmacyCalendarDbContext>();
-                dbContext.Database.Migrate();
+                //dbContext.Database.Migrate();
             }
             return app;
         }

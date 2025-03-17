@@ -8,12 +8,9 @@ using Utilities.Framework.Guards;
 
 namespace Utilities.Framework
 {
-    public abstract class AggregateRoot : IEntity<Guid>
+    public class BaseEntity
     {
-        public virtual Guid Id
-        {
-            get;
-            protected set;
-        }
+        public Guid Id { get; protected set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

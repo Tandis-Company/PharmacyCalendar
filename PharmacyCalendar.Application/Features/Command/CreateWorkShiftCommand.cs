@@ -7,38 +7,48 @@ using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Enums;
 
 namespace PharmacyCalendar.Application.Features.Command
 {
-    public class CreateWorkShiftCommand : IRequest<List<CreateWorkShiftDto>>
+    public class CreateWorkShiftCommand : IRequest<CreateWorkShiftDto>
     {
         public WorkShift WorkShift { get; set; }
         public Weekdays Weekdays { get; set; }
+        public Guid TechnicalOfficerId { get; set; }
+
 
         #region [- Handler() -]
-
-        public class Handler : IRequestHandler<CreateWorkShiftCommand, List<CreateWorkShiftDto>>
+        public class Handler : IRequestHandler<CreateWorkShiftCommand,CreateWorkShiftDto>
         {
-            private readonly ITechnicalOfficerWorkShiftRepository _repository;
-            public Handler(ITechnicalOfficerWorkShiftRepository repository)
+            private readonly ITechnicalOfficerRepository _repository;
+            public Handler(ITechnicalOfficerRepository repository)
             {
                 _repository = repository;
             }
-            public async Task<List<CreateWorkShiftDto>> Handle(CreateWorkShiftCommand request, CancellationToken cancellationToken)
+            public async Task<CreateWorkShiftDto> Handle(CreateWorkShiftCommand request, CancellationToken cancellationToken)
             {
-                var officer = new TechnicalOfficerWorkshift();
-                officer.Weekdays = request.Weekdays;
-                officer.WorkShift = request.WorkShift;
+                var technicalOfficer = await _repository.GetByIdAsync(request.TechnicalOfficerId, cancellationToken);
+
+                if (technicalOfficer == null)
+                {
+                    throw new Exception("TechnicalOfficer not found.");
+                }
+
+                var officer = new TechniacalOfficerWorkShift
+                {
+                    Weekdays = request.Weekdays,
+                    WorkShift = request.WorkShift,
+                    TechnicalOfficerId = request.TechnicalOfficerId,
+                };
 
                 await _repository.AddAsync(officer, cancellationToken);
                 var officerDto = new CreateWorkShiftDto
                 {
                     Weekdays = officer.Weekdays,
                     WorkShift = officer.WorkShift,
-                    FullName = officer.FullName.FullName,
+                    TechnicalOfficerId = officer.TechnicalOfficerId,
+                    FullName = technicalOfficer.FullName
                 };
-
-                return new List<CreateWorkShiftDto> { officerDto };
+                return officerDto;
             }
         }
-
         #endregion
 
         #region [- Validator() -]

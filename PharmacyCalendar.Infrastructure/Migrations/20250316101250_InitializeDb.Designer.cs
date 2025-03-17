@@ -12,7 +12,7 @@ using PharmacyCalendar.Infrastructure;
 namespace PharmacyCalendar.Infrastructure.Migrations
 {
     [DbContext(typeof(PharmacyCalendarDbContext))]
-    [Migration("20250310071902_InitializeDb")]
+    [Migration("20250316101250_InitializeDb")]
     partial class InitializeDb
     {
         /// <inheritdoc />
@@ -24,6 +24,31 @@ namespace PharmacyCalendar.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.TechniacalOfficerWorkShift", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TechnicalOfficerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Weekdays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkShift")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TechnicalOfficerId");
+
+                    b.ToTable("TechnicalOfficerWorkshift", (string)null);
+                });
 
             modelBuilder.Entity("PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.TechnicalOfficer", b =>
                 {
@@ -47,6 +72,22 @@ namespace PharmacyCalendar.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TechnicalOfficer", (string)null);
+                });
+
+            modelBuilder.Entity("PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.TechniacalOfficerWorkShift", b =>
+                {
+                    b.HasOne("PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.TechnicalOfficer", "TechnicalOfficer")
+                        .WithMany("TechniacalOfficerWorkShift")
+                        .HasForeignKey("TechnicalOfficerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("TechnicalOfficer");
+                });
+
+            modelBuilder.Entity("PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.TechnicalOfficer", b =>
+                {
+                    b.Navigation("TechniacalOfficerWorkShift");
                 });
 #pragma warning restore 612, 618
         }

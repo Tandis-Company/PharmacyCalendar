@@ -65,7 +65,7 @@ namespace PharmacyCalendar.Application.Features.Command
                 var remainder = sum % 11;
                 return (remainder < 2 && check == remainder) || (remainder >= 2 && check == 11 - remainder);
             }
-        }
+    }
         # endregion
 
     }

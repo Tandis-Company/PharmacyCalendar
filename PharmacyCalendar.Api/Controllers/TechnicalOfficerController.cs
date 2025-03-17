@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyCalendar.Application.Features.Command;
 using PharmacyCalendar.Application.Features.Dtos;
@@ -32,7 +31,9 @@ namespace PharmacyCalendar.Api.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<ApiResult<GetTechnicalOfficerDto>> GetById([FromQuery] GetTechnicalOfficerByIdQuery query, CancellationToken cancellationToken = default)
+        public async Task<ApiResult<GetTechnicalOfficerDto>> GetById(
+            [FromQuery] GetTechnicalOfficerByIdQuery query,
+            CancellationToken cancellationToken = default)
         {
             var officer = await _mediator.Send(query, cancellationToken);
             return Ok(officer);
@@ -48,11 +49,7 @@ namespace PharmacyCalendar.Api.Controllers
             var validationResult = _individualValidator.Validate(command);
             if (!validationResult.IsValid)
             {
-                var errorMessages = validationResult.Errors
-                .Select(error => error.ErrorMessage)
-                .ToList();
-                var combinedErrorMessage = string.Join(" | ", errorMessages);
-                return new ApiResult<Guid>(false, combinedErrorMessage);
+                return new ApiResult<Guid>(false, "خطا در وارد کردن اطلاعات");
             }
             var result = await _mediator.Send(command, cancellationToken);
             return Ok(result);

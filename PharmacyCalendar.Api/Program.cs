@@ -3,13 +3,19 @@ using PharmacyCalendar.Api.Configuration;
 using PharmacyCalendar.Application.Features.Query;
 using PharmacyCalendar.Infrastructure.Configuration;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddJwtAuthentication(builder.Configuration);

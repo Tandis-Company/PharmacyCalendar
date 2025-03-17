@@ -22,7 +22,7 @@ namespace PharmacyCalendar.Application.Features.Command
                 var officer = await _repository.GetByIdAsync(request.Id, cancellationToken);
                 if (officer == null)
                 {
-                    throw new AppException("گروه پیدا نشد", System.Net.HttpStatusCode.NotFound);
+                    throw new AppException("کاربر یافت نشد", System.Net.HttpStatusCode.NotFound);
                 }
                 await _repository.DeleteAsync(officer,cancellationToken);
                 await _repository.SaveChangeAsync(cancellationToken);
