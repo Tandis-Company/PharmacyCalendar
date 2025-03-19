@@ -10,6 +10,5 @@ namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate
         public Weekdays Weekdays { get; set; }
         public Guid TechnicalOfficerId { get; set; }
         public TechnicalOfficer TechnicalOfficer { get; set; }
-
     }
 }

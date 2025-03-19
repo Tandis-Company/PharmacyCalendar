@@ -7,22 +7,21 @@ using PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Enums;
 
 namespace PharmacyCalendar.Application.Features.Command
 {
-    public class CreateWorkShiftCommand : IRequest<CreateWorkShiftDto>
+    public class CreateWorkShiftCommand : IRequest<List<CreateWorkShiftDto>>
     {
-        public WorkShift WorkShift { get; set; }
-        public Weekdays Weekdays { get; set; }
+        public List<WorkShift> WorkShift { get; set; }
+        public List<Weekdays> Weekdays { get; set; }
         public Guid TechnicalOfficerId { get; set; }
 
-
         #region [- Handler() -]
-        public class Handler : IRequestHandler<CreateWorkShiftCommand,CreateWorkShiftDto>
+        public class Handler : IRequestHandler<CreateWorkShiftCommand, List<CreateWorkShiftDto>>
         {
             private readonly ITechnicalOfficerRepository _repository;
             public Handler(ITechnicalOfficerRepository repository)
             {
                 _repository = repository;
             }
-            public async Task<CreateWorkShiftDto> Handle(CreateWorkShiftCommand request, CancellationToken cancellationToken)
+            public async Task<List<CreateWorkShiftDto>> Handle(CreateWorkShiftCommand request, CancellationToken cancellationToken)
             {
                 var technicalOfficer = await _repository.GetByIdAsync(request.TechnicalOfficerId, cancellationToken);
 
@@ -31,83 +30,79 @@ namespace PharmacyCalendar.Application.Features.Command
                     throw new Exception("TechnicalOfficer not found.");
                 }
 
-                var officer = new TechniacalOfficerWorkShift
+                var workShifts = new List<TechniacalOfficerWorkShift>();
+                foreach (var weekday in request.Weekdays)
                 {
-                    Weekdays = request.Weekdays,
-                    WorkShift = request.WorkShift,
-                    TechnicalOfficerId = request.TechnicalOfficerId,
-                };
+                    foreach (var workShift in request.WorkShift)
+                    {
+                        workShifts.Add(new TechniacalOfficerWorkShift
+                        {
+                            WorkShift = workShift,
+                            Weekdays = weekday,
+                            TechnicalOfficerId = request.TechnicalOfficerId,
+                        });
+                    }
+                }
 
-                await _repository.AddAsync(officer, cancellationToken);
-                var officerDto = new CreateWorkShiftDto
+                await _repository.AddRangeAsync(workShifts, cancellationToken);
+
+                return workShifts.Select(ws => new CreateWorkShiftDto
                 {
-                    Weekdays = officer.Weekdays,
-                    WorkShift = officer.WorkShift,
-                    TechnicalOfficerId = officer.TechnicalOfficerId,
+                    WorkShift = ws.WorkShift,
+                    Weekdays = ws.Weekdays,
+                    TechnicalOfficerId = ws.TechnicalOfficerId,
                     FullName = technicalOfficer.FullName
-                };
-                return officerDto;
+                }).ToList();
             }
         }
         #endregion
 
         #region [- Validator() -]
-        public class CreateWorkShiftDtoValidator : AbstractValidator<CreateWorkShiftCommand>
-        {
-            public CreateWorkShiftDtoValidator()
-            {
 
+        public class CreateWorkShiftCommandValidator : AbstractValidator<CreateWorkShiftCommand>
+        {
+            public CreateWorkShiftCommandValidator()
+            {
                 RuleFor(x => x.Weekdays)
-                    .IsInEnum().WithMessage("روز هفته نامعتبر است.");
+                    .NotEmpty().WithMessage("روز هفته باید مشخص شود.")
+                    .Must(weekdays => weekdays.All(w => Enum.IsDefined(typeof(Weekdays), w)))
+                    .WithMessage("روز هفته نامعتبر است");
 
                 RuleFor(x => x.WorkShift)
-                    .IsInEnum().WithMessage("شیفت کاری نامعتبر است.");
-            }
-        }
-        public class CreateWorkShiftCollectionValidator : AbstractValidator<List<CreateWorkShiftCommand>>
-        {
-            public CreateWorkShiftCollectionValidator()
-            {
-                RuleFor(x => x)
-                    .Must(HaveConsecutiveShifts)
-                    .WithMessage("حداقل ۴ شیفت متوالی باید انتخاب شود.");
+                      .NotEmpty().WithMessage("شیفت کاری باید مشخص شود.")
+                      .Must(shifts => shifts.All(s => Enum.IsDefined(typeof(WorkShift), s)))
+                      .WithMessage("شیفت کاری نامعتبر است")
+                      .Must(HaveConsecutiveShifts)
+                      .WithMessage("حداقل ۴ شیفت متوالی باید انتخاب شود.");
             }
 
-            private bool HaveConsecutiveShifts(List<CreateWorkShiftCommand> shifts)
+            private bool HaveConsecutiveShifts(List<WorkShift> workShifts)
             {
-                if (shifts == null || shifts.Count < 4)
+                if (workShifts == null || workShifts.Count < 4)
                     return false;
 
-                var groupedShifts = shifts
-                    .GroupBy(s => new { s.Weekdays })
-                    .ToList();
+                var sortedShifts = workShifts.OrderBy(ws => (int)ws).ToList();
 
-                foreach (var group in groupedShifts)
+                int consecutiveCount = 1;
+                for (int i = 1; i < sortedShifts.Count; i++)
                 {
-                    var sortedShifts = group
-                        .OrderBy(s => s.WorkShift)
-                        .Select(s => s.WorkShift)
-                        .ToList();
-
-                    int consecutiveCount = 1;
-                    for (int i = 1; i < sortedShifts.Count; i++)
+                    if ((int)sortedShifts[i] == (int)sortedShifts[i - 1] + 1)
                     {
-                        if ((int)sortedShifts[i] == (int)sortedShifts[i - 1] + 1)
-                        {
-                            consecutiveCount++;
-                            if (consecutiveCount >= 4)
-                                return true;
-                        }
-                        else
-                        {
-                            consecutiveCount = 1;
-                        }
+                        consecutiveCount++;
+                        if (consecutiveCount >= 4)
+                            return true;
+                    }
+                    else
+                    {
+                        consecutiveCount = 1;
                     }
                 }
                 return false;
             }
         }
+
         #endregion
+
     }
 }
 

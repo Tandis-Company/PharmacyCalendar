@@ -1,15 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{7FDD903B-5AC7-48D1-8256-69F69D9015EA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D34200FA-C6AE-47DD-A7A6-9F5AE45005EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{F36C882B-6DCF-4CB2-B44A-2871AA2913FE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Messages", "EventBus.Messages\EventBus.Messages.csproj", "{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities.Framework", "Utilities.Framework\Utilities.Framework.csproj", "{38F4F6C3-0655-4448-8F7E-D20829A350B0}"
 EndProject
@@ -27,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38F4F6C3-0655-4448-8F7E-D20829A350B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38F4F6C3-0655-4448-8F7E-D20829A350B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38F4F6C3-0655-4448-8F7E-D20829A350B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,7 +48,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A154DD9B-6CDA-4F3C-BD10-75F0C38DCC31} = {7FDD903B-5AC7-48D1-8256-69F69D9015EA}
 		{38F4F6C3-0655-4448-8F7E-D20829A350B0} = {D34200FA-C6AE-47DD-A7A6-9F5AE45005EB}
 		{E330AFD8-3145-4DFA-951F-6B086486B3E8} = {F36C882B-6DCF-4CB2-B44A-2871AA2913FE}
 		{626E41B5-6216-4A9E-8747-B9BC03E608C0} = {F36C882B-6DCF-4CB2-B44A-2871AA2913FE}

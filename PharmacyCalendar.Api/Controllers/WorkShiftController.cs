@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyCalendar.Application.Features.Command;
 using PharmacyCalendar.Application.Features.Dtos.WorkShiftDto;
-using Utilities.Framework;
 
 namespace PharmacyCalendar.Api.Controllers
 {
@@ -11,41 +10,48 @@ namespace PharmacyCalendar.Api.Controllers
     [ApiController]
     public class WorkShiftController : ControllerBase
     {
-        private readonly IValidator<CreateWorkShiftCommand> _individualValidator;
-        private readonly IValidator<List<CreateWorkShiftCommand>> _collectionValidator;
         private readonly IMediator _mediator;
+        private readonly IValidator<CreateWorkShiftCommand> _validator;
 
         #region [- Ctor -]
-        public WorkShiftController(
-            IValidator<CreateWorkShiftCommand> individualValidator,
-            IValidator<List<CreateWorkShiftCommand>> collectionValidator,
-            IMediator mediator)
+        public WorkShiftController(IMediator mediator, IValidator<CreateWorkShiftCommand> validator)
         {
-            _individualValidator = individualValidator;
-            _collectionValidator = collectionValidator;
             _mediator = mediator;
+            _validator = validator;
         }
         #endregion
 
         #region [- Post() -]
 
         [HttpPost]
-        public async Task<ApiResult<CreateWorkShiftDto>> Create
-            ([FromBody] CreateWorkShiftCommand command, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Create(
+            [FromBody] List<CreateWorkShiftCommand> commands, CancellationToken cancellationToken = default)
         {
-            //var validationResult = _individualValidator.Validate(command);
-            //if (!validationResult.IsValid)
-            //{
-            //    return BadRequest(validationResult.Errors);
-            //}
-            //var validationWorkShiftResult = _collectionValidator.Validate(new List<CreateWorkShiftCommand> { command });
-            //if (!validationResult.IsValid)
-            //{
-            //    return BadRequest(validationResult.Errors);
-            //}
-            var result = await _mediator.Send(command, cancellationToken);
-            return Ok(result);
+            if (commands == null || !commands.Any())
+                return BadRequest("At least one work shift must be provided.");
+
+            var validationErrors = new List<string>();
+            var results = new List<CreateWorkShiftDto>();
+
+            foreach (var command in commands)
+            {
+                var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    validationErrors.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+                    continue;
+                }
+
+                var result = await _mediator.Send(command, cancellationToken);
+                results.AddRange(result);
+            }
+
+            if (validationErrors.Any())
+                return BadRequest(new { Errors = validationErrors });
+
+            return Ok(results);
         }
         #endregion
+
     }
 }

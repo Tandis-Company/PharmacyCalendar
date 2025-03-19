@@ -4,6 +4,6 @@ namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate.Cont
 {
     public interface ITechnicalOfficerRepository : IWriteRepository<TechnicalOfficer>, IReadRepository<TechnicalOfficer>
     {
-        Task<TechniacalOfficerWorkShift> AddAsync(TechniacalOfficerWorkShift entity, CancellationToken cancellationToken = default, bool saveChanges = true);
+        Task<List<TechniacalOfficerWorkShift>> AddRangeAsync(List<TechniacalOfficerWorkShift> entity, CancellationToken cancellationToken = default, bool saveChanges = true);
     }
 }

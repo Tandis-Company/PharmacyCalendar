@@ -12,9 +12,9 @@ namespace PharmacyCalendar.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<TechniacalOfficerWorkShift> AddAsync(TechniacalOfficerWorkShift entity, CancellationToken cancellationToken = default, bool saveChanges = true)
+        public async Task<List<TechniacalOfficerWorkShift>> AddRangeAsync(List<TechniacalOfficerWorkShift> entity, CancellationToken cancellationToken = default, bool saveChanges = true)
         {
-            await _context.AddAsync(entity, cancellationToken);
+            await _context.AddRangeAsync(entity, cancellationToken);
             if (saveChanges)
                 await SaveChangeAsync(cancellationToken);
             return entity;

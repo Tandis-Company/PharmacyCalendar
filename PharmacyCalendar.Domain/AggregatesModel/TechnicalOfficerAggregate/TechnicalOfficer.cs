@@ -6,8 +6,8 @@ namespace PharmacyCalendar.Domain.AggregatesModel.TechnicalOfficerAggregate
 {
     public class TechnicalOfficer : BaseEntity, IDbSetEntity
     {
-        public string FullName { get; private set; }
-        public string NationalCode { get; private set; }
+        public string FullName { get; set; }
+        public string NationalCode { get; set; }
         public List<TechniacalOfficerWorkShift> TechniacalOfficerWorkShift { get; set; }
 
         public TechnicalOfficer(string fullName, string nationalCode)
